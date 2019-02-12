@@ -131,6 +131,22 @@ static NSDictionary *dataToArrayBuffer(NSData* data) {
 
     }
 
+    // Create a new list of Service UUIDs as Strings instead of CBUUIDs
+    NSMutableArray *hashedServiceUUIDs = [dict objectForKey:@"kCBAdvDataHashedServiceUUIDs"];
+    NSMutableArray *hashedServiceUUIDStrings;
+    if (hashedServiceUUIDs) {
+        hashedServiceUUIDStrings = [[NSMutableArray alloc] initWithCapacity:hashedServiceUUIDs.count];
+        
+        for (CBUUID *uuid in hashedServiceUUIDs) {
+            [hashedServiceUUIDStrings addObject:[uuid UUIDString]];
+        }
+        
+        // replace the UUID list with list of strings
+        [dict removeObjectForKey:@"kCBAdvDataHashedServiceUUIDs"];
+        [dict setObject:hashedServiceUUIDStrings forKey:@"kCBAdvDataHashedServiceUUIDs"];
+        
+    }
+
     // Solicited Services UUIDs is an array of CBUUIDs, convert into Strings
     NSMutableArray *solicitiedServiceUUIDs = [dict objectForKey:CBAdvertisementDataSolicitedServiceUUIDsKey];
     NSMutableArray *solicitiedServiceUUIDStrings;
